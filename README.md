@@ -11,6 +11,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 
 1. Lancer le script Python **create_image.py** avec la syntaxe suivante (OS associé à l'image **Ubuntu 14.04** LTS Server):
 
+```
     $ tar czfv config_files.tar.gz config_files <CR>
     $ python create_image.py <CR>
     usage: create_image.py vm-name userdata-file key-name
@@ -20,34 +21,43 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
     
         ex: (KEY=/home/user/.keyroot)
         $ python create_image.py LB-VM04 $KEY udata.txt <CR>
+```
 
   En cas de dysfonctionnement se connecter à la VM pour vérifier le déroulement du script Shell (udata.txt) à l'aide du fichier "/root/bootVM.log") de la façon suivante:
 
+```
     $ ssh -i ../KEY root@IPfloatVM <CR>
     lb-vm04# more /root/bootVM.log <CR>
+```
 
 2. Créer une image VM de référence nécessaire aux instances de VM pour le cluster Spark.
 
+
+```
     $ nova image-create LB-VM04 LB-VM04-R01 <CR>
+```
 
 3. Instancier le cluster Spark à l'aide du script Python "spark-openstack" avec la syntaxe suivante:
 
+```
     $ spark-openstack launch -s 2 -k $KEY -i LB-VM04-R01 -c LB-VM05 <CR>
     ...
     $ nova list | grep grep LB-VM05 <CR>
     ...
+```
 
 4. Démarrer les services **Hadoop**, **Spark and Co** en se connectant à la VM master du cluster et en utilisant les fonctions du fichier "fabfile.py", comme ceci. Le script Python "fabfile.py" associé au master (compte: **hduser**) permet selon les arguments donnés :
 
-* de copier les fichiers de configuration pour **Hadoop**, **Yarn** et **Spark** sur l'ensemble des noeuds du cluster,
-* de formater l'espace **Hadoop** associé au namenode,
-* de démarrer *Hadoop*,
-* de créer un répertoire utilisateur (hduser) sur HDFS,
-* de démarrer **Yarn**,
-* de démarrer **Spark** (master et slave(s)).
+    * de copier les fichiers de configuration pour **Hadoop**, **Yarn** et **Spark** sur l'ensemble des noeuds du cluster,
+    * de formater l'espace **Hadoop** associé au namenode,
+    * de démarrer *Hadoop*,
+    * de créer un répertoire utilisateur (hduser) sur HDFS,
+    * de démarrer **Yarn**,
+    * de démarrer **Spark** (master et slave(s)).
 
 La connexion au master et les commandes Python de gestion du cluster sont données ci-dessous pour exemple.
 
+```
     $ ssh -i ../KEY root@IPfloatVM <CR>
     lb-vm05-master# fab -l <CR>
     ...
@@ -59,5 +69,6 @@ La connexion au master et les commandes Python de gestion du cluster sont donné
     $ fab init_cluster <CR>
     $ fab start_hadoop <CR>
     $ fab start_spark <CR>
+```
 
 A ce stade, on peut utiliser et gérer le cluster à l'aide des différentes interfaces. Pour ce faire, l'utilisation de notebooks est appropriée. Cette petite adaptation relative à un embryon de portage du code **EC2 Spark** sur **Openstack Spark** basé sur une réalisation existante. Un travail approfondi doit être mené pour réellement porter le code **EC2 Spark** pour **Openstack Spark**. La charge de travail est de l'ordre de 5 à 8 jours.
