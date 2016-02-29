@@ -19,7 +19,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
         userdata-file: fichier de commandes à passer à Cloud-init
         key-name: fichier relatif à la clé privée d'accès root à la VM
     
-    ex: (KEY=/home/user/.keyroot)
+    # ex: (KEY=/home/user/.keyroot)
     $ python create_image.py LB-VM04 $KEY udata.txt <CR>
 ```
 
