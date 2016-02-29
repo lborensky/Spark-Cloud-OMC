@@ -37,13 +37,14 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 	$ nova list | grep grep LB-VM05 <CR>
 	...
 
-4. Démarrer les services *Hadoop*, *Spark and Co* en se connectant à la VM master du cluster et en utilisant les fonctions du fichier "fabfile.py", comme ceci. Le script Python "fabfile.py" associé au master (compte *hduser*) permet selon les arguments donnés de :
-    - de copier les fichiers de configuration pour *Hadoop*, *Yarn* et *Spark* sur l'ensemble des noeuds du cluster,
-    - de formater l'espace Hadoop associé au namenode,
-    - de démarrer *Hadoop*,
-    - de créer un répertoire utilisateur (hduser) sur HDFS,
-    - de démarrer *Yarn*,
-    - de démarrer *Spark* (master et slave(s)).
+4. Démarrer les services *Hadoop*, *Spark and Co* en se connectant à la VM master du cluster et en utilisant les fonctions du fichier "fabfile.py", comme ceci. Le script Python "fabfile.py" associé au master (compte *hduser*) permet selon les arguments donnés :
+
+* de copier les fichiers de configuration pour *Hadoop*, *Yarn* et *Spark* sur l'ensemble des noeuds du cluster,
+* de formater l'espace Hadoop associé au namenode,
+* de démarrer *Hadoop*,
+* de créer un répertoire utilisateur (hduser) sur HDFS,
+* de démarrer *Yarn*,
+* de démarrer *Spark* (master et slave(s)).
 
 La connexion au master et les commandes Python de gestion du cluster sont données ci-dessous pour exemple.
 
