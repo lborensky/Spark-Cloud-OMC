@@ -9,7 +9,7 @@ Elle a été adaptée uniquement pour montrer la faisabilité aisée du déploie
 
 Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémentation d'**Openstack** retenue (release **Icehouse**), il faut procéder comme ceci depuis un poste quelconque sur lequel, les commandes **CLI** et le **SDK** Python (2.7) d'**Openstack** sont présents et configurés:
 
-1) Lancer le script Python **create_image.py** avec la syntaxe suivante (OS associé à l'image **Ubuntu 14.04** LTS Server):
+1) Lancer le script Python **create_image.py** avec la syntaxe suivante (OS **Ubuntu 14.04** LTS Server associé à l'image):
 
 ```
     $ tar czfv config_files.tar.gz config_files <CR>
