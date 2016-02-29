@@ -9,7 +9,7 @@ Elle a été adaptée uniquement pour montrer la faisabilité aisée du déploie
 
 Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémentation d'**Openstack** retenue (release **Icehouse**), il faut procéder comme ceci depuis un poste quelconque sur lequel, les commandes **CLI** et le **SDK** Python (2.7) d'**Openstack** sont présents et configurés:
 
-1. Lancer le script Python **create_image.py** avec la syntaxe suivante (OS associé à l'image **Ubuntu 14.04** LTS Server):
+1) Lancer le script Python **create_image.py** avec la syntaxe suivante (OS associé à l'image **Ubuntu 14.04** LTS Server):
 
 ```
     $ tar czfv config_files.tar.gz config_files <CR>
@@ -30,14 +30,14 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
     lb-vm04# more /root/bootVM.log <CR>
 ```
 
-2. Créer une image VM de référence nécessaire aux instances de VM pour le cluster Spark.
+2) Créer une image VM de référence nécessaire aux instances de VM pour le cluster Spark.
 
 
 ```
     $ nova image-create LB-VM04 LB-VM04-R01 <CR>
 ```
 
-3. Instancier le cluster Spark à l'aide du script Python "spark-openstack" avec la syntaxe suivante:
+3) Instancier le cluster Spark à l'aide du script Python "spark-openstack" avec la syntaxe suivante:
 
 ```
     $ spark-openstack launch -s 2 -k $KEY -i LB-VM04-R01 -c LB-VM05 <CR>
@@ -46,7 +46,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
     ...
 ```
 
-4. Démarrer les services **Hadoop**, **Spark and Co** en se connectant à la VM master du cluster et en utilisant les fonctions du fichier "fabfile.py", comme ceci. Le script Python "fabfile.py" associé au master (compte: **hduser**) permet selon les arguments donnés :
+4) Démarrer les services **Hadoop**, **Spark and Co** en se connectant à la VM master du cluster et en utilisant les fonctions du fichier "fabfile.py", comme ceci. Le script Python "fabfile.py" associé au master (compte: **hduser**) permet selon les arguments donnés :
 
     * de copier les fichiers de configuration pour **Hadoop**, **Yarn** et **Spark** sur l'ensemble des noeuds du cluster,
     * de formater l'espace **Hadoop** associé au namenode,
