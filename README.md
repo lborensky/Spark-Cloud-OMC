@@ -25,7 +25,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
   En cas de dysfonctionnement se connecter à la VM pour vérifier le déroulement du script Shell (udata.txt) à l'aide du fichier "/root/bootVM.log") de la façon suivante:
 
 ```
-    $ ssh -i ../KEY root@IPfloatVM <CR>
+    $ ssh -i KeyfileName root@VMfloatingIP <CR>
     root@lb-vm04# tail -f /root/bootVM.log <CR>
 ```
 
@@ -57,7 +57,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 La connexion au master et les commandes Python de gestion du cluster sont données ci-dessous pour exemple.
 
 ```
-    $ ssh -i NameKeyFile root@${IPFloatVM:-"192.12.74.19"} <CR>
+    $ ssh -i KeyFileName root@$VMfloatingIP <CR>
     root@lb-vm05-master# fab -l <CR>
     ...
     # test les connexions SSH avec les slaves (workers Spark)
