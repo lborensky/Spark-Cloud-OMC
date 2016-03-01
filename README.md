@@ -16,7 +16,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
     $ python create_image.py <CR>
     usage: create_image.py vm-name key-name userdata-file
         vm-name: nom de la VM à instancier
-        key-name: fichier relatif à la clé privée d'accès root à la VM
+        key-name: nom du fichier (présent sous le répertoire courant) relatif à la clé privée d'accès root à la VM
         userdata-file: fichier de commandes à passer à Cloud-init
     
     $ python create_image.py LB-VM04 KP-OMC-01 udata.txt <CR>
@@ -26,7 +26,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 
 ```
     $ ssh -i ../KEY root@IPfloatVM <CR>
-    lb-vm04# more /root/bootVM.log <CR>
+    root@lb-vm04# tail -f /root/bootVM.log <CR>
 ```
 
 2) Créer une image VM de référence nécessaire aux instances de VM pour le cluster Spark.
@@ -57,17 +57,20 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 La connexion au master et les commandes Python de gestion du cluster sont données ci-dessous pour exemple.
 
 ```
-    $ ssh -i ../KEY root@IPfloatVM <CR>
-    lb-vm05-master# fab -l <CR>
+    $ ssh -i NameKeyFile root@${IPFloatVM:-"192.12.74.19"} <CR>
+    root@lb-vm05-master# fab -l <CR>
     ...
     # test les connexions SSH avec les slaves (workers Spark)
-    $ fab test_conn <CR>
+    root@lb-vm05-master# fab test_conn <CR>
     lb-vm05-slave-94e538d0-5b19-457e-8e72-939647fb68d2
     lb-vm05-slave-4131aab9-c505-4f75-9f34-6dd884258941
     
-    $ fab init_cluster <CR>
-    $ fab start_hadoop <CR>
-    $ fab start_spark <CR>
+    root@lb-vm05-master# fab init_cluster <CR>
+    ...
+    root@lb-vm05-master# fab start_hadoop <CR>
+    ...
+    root@lb-vm05-master# fab start_spark <CR>
+    ...
 ```
 
 A ce stade, on peut utiliser et gérer le cluster à l'aide des différentes interfaces. Pour ce faire, l'utilisation de notebooks est appropriée. Cette petite adaptation relative à un embryon de portage du code **EC2 Spark** sur **Openstack Spark** basé sur une réalisation existante. Un travail approfondi doit être mené pour réellement porter le code **EC2 Spark** pour **Openstack Spark**. La charge de travail est de l'ordre de 5 à 8 jours.
