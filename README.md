@@ -14,13 +14,12 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 ```
     $ tar czfv config_files.tar.gz config_files <CR>
     $ python create_image.py <CR>
-    usage: create_image.py vm-name userdata-file key-name
+    usage: create_image.py vm-name key-name userdata-file
         vm-name: nom de la VM à instancier
-        userdata-file: fichier de commandes à passer à Cloud-init
         key-name: fichier relatif à la clé privée d'accès root à la VM
+        userdata-file: fichier de commandes à passer à Cloud-init
     
-    # ex: (KEY=/home/user/.keyroot)
-    $ python create_image.py LB-VM04 $KEY udata.txt <CR>
+    $ python create_image.py LB-VM04 KP-OMC-01 udata.txt <CR>
 ```
 
   En cas de dysfonctionnement se connecter à la VM pour vérifier le déroulement du script Shell (udata.txt) à l'aide du fichier "/root/bootVM.log") de la façon suivante:

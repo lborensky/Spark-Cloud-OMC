@@ -5,15 +5,15 @@ from novaclient.v1_1 import client as nvclient
 
 # vérification de la présence du paramètre (@IP de PunchPlatform)
 if len(sys.argv) != 4:
-  print("usage: %s vm-name userdata-file key-name") % sys.argv[0]
+  print("usage: %s vm-name key-name userdata-file") % sys.argv[0]
   print("    vm-name: nom de la VM à instancier")
+  print("    key-name-file: fichier relatif à la clé privée d'accès root à la VM")
   print("    userdata-file: fichier de commandes à passer à Cloud-init")
-  print("    key-name: fichier relatif à la clé privée d'accès root à la VM")
   sys.exit(1)
 else:
   vm_name = sys.argv[1]
-  userdata_file = sys.argv[2]
-  key_name = sys.argv[3]
+  key_name = sys.argv[2]
+  userdata_file = sys.argv[3]
 
 # connexion aux services de Cloud OMC / IMA (nova)
 nova = nvclient.Client(username=os.environ['OS_USERNAME'],
@@ -27,7 +27,7 @@ net_id="67a3e2c9-424a-463a-8a73-cccde3de4443"
 nics = [{"net-id": net_id, "v4-fixed-ip": ''}]
 
 # image de la VM gateway (broker de message et requeteur ELK)
-image = nova.images.find(id="573ca7d8-fb85-4660-9ea1-af0db610d7cb")
+image = nova.images.find(id="4fef4b01-31eb-4cc1-9960-d1dca922e546")
 
 # (petite) VM avec 4Go de RAM
 flavor = nova.flavors.find(name="t1.standard.medium-1")
@@ -79,7 +79,7 @@ def sendfile(k, ip):
   ssh = ssh_connect(k, ip)
 
   ftp = ssh.open_sftp()
-  ftp.put('config_files.tar.gz', '/root/')
+  ftp.put('config_files.tar.gz', '/tmp/config_files.tar.gz')
 
   ftp.close()
   ssh.close()
