@@ -17,31 +17,57 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import with_statement
-import sys, paramiko
+import os, sys, time, paramiko
 
 try:
-    from fabric.api import *
-    from fabric.contrib.files import exists
+  from fabric.api import *
+  from fabric.contrib.files import exists
 except ImportError as e:
-    print("Could not import fabric, make sure it is installed")
-    sys.exit(1)
+  print("Could not import fabric, make sure it is installed")
+  sys.exit(1)
+
+try:
+  from novaclient.v1_1 import client as nvclient
+except ImportError as e:
+  print("Could not import novaclient, make sure it is installed")
+  sys.exit(1)
 
 import argparse
 import hashlib
 from datetime import datetime
 from time import sleep
 try:
-    from helpers.check_args import checkArgs_for_launch
-    from helpers.check_args import checkArgs_for_destroy
-    from helpers.launcher import bootVM
-    from helpers.destroy import destroy_cluster
-    from helpers.verify_boot import verify_all
-    from helpers.floating_ip import addFloatingIP
-    from helpers.find_vm import getVMByName, getVMById, extract_hash
-    from helpers.find_vm import getVMById
+  from helpers.check_args import checkArgs_for_launch
+  from helpers.check_args import checkArgs_for_destroy
+  from helpers.launcher import bootVM
+  from helpers.destroy import destroy_cluster
+  from helpers.verify_boot import verify_all
+  from helpers.scp import scp
+  from helpers.master_key import register_key
+  from helpers.floating_ip import addFloatingIP
+  from helpers.find_vm import getVMByName, getVMById, extract_hash
+  from helpers.find_vm import getVMById
 except ImportError as e:
-    print("Could not import helpers, MayDay MayDay...")
-    sys.exit(1)
+  print("Could not import helpers, MayDay MayDay...")
+  sys.exit(1)
+
+# fonction d'obtention de l'ID de l'image
+def image_id(img):
+  nova = nvclient.Client(username=os.environ['OS_USERNAME'],
+  project_id=os.environ['OS_TENANT_NAME'],
+  api_key=os.environ['OS_PASSWORD'],
+  auth_url=os.environ['OS_AUTH_URL'],
+  insecure=True)
+
+  if not nova.images.findall(id=img):
+    found = False
+    for i in nova.images.list():
+      if image_ref == i.name:
+        return i.id
+    if found == False:
+      return img
+  else:
+    return img
 
 # fonction de connexion SSH
 def ssh_connect(k, ip):
@@ -107,14 +133,14 @@ def launch_cluster(options):
     username = "hduser"
     print("###########################################################\n")
     print("Booting Master... ")
-    master_vm = boot_master(opts)
+    master_vm = boot_master(options)
     master_name = master_vm.name
     print("Master booted, Assigning floating ip... ")
     floating_ip = addFloatingIP(master_vm)
     print("Floating IP assigned: " + floating_ip)
 
     # récupération de la clé publique et privée associées au compte 'hduser'
-    sys.sleep(10)
+    time.sleep(10)
     hdu_pkey(options.keyname, floating_ip, "get")
 
     print("###########################################################\n")
@@ -210,6 +236,7 @@ def boot_master(options):
 if __name__ == "__main__":
     opts = parse_arguments()
     if str(opts.action) == 'launch':
+        opts.image = image_id(opts.image)
         args = checkArgs_for_launch(opts)
         print("###########################################################\n")
         print("Arguments Verified... preparing launch sequence")
