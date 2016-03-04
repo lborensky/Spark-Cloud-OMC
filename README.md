@@ -8,7 +8,7 @@ Cette réalisation est un embryon de l'application **Spark EC2** pour **Openstac
 
 Elle a été adaptée uniquement pour montrer la faisabilité aisée du déploiement d'un cluster **Spark** sur **Openstack**. Le code est une première itération qui doit être améliorée sur les aspects qualité du code, sécurité et fonctionnalités. A titre d'exemple, il est nécessaire de vérifier que les quotas en ressources du tenant ne sont pas toutes consommées (ex: adresses IP flottantes, RAM, etc.). En l'état, le code permet de mettre facilement à disponibilité un cluster **Spark** (le démarrer et supprimer uniquement) pour par exemple dérouler des sessions de formation. La réalisation n'est naturellement pas destinée à être déployée en production.
 
-## B.Construction d'une image de référence
+## B. Construction d'une image de référence
 Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémentation d'**Openstack** retenue (release **Icehouse**), il faut procéder comme ceci depuis un poste quelconque sur lequel, les commandes **CLI** et le **SDK** Python (2.7) d'**Openstack** sont présents et configurés:
 
 1) Lancer le script Python **create_image.py** avec la syntaxe suivante (OS **Ubuntu 14.04** LTS Server associé à l'image):
@@ -78,4 +78,5 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
     ...
 ```
 
+## D. Conclusion
 A ce stade, on peut utiliser et gérer le cluster à l'aide des différentes interfaces. Pour ce faire, l'utilisation de notebooks est appropriée. Cette petite adaptation relative à un embryon de portage du code **EC2 Spark** sur **Openstack Spark** basé sur une réalisation existante. Un travail approfondi doit être mené pour réellement porter le code **EC2 Spark** pour **Openstack Spark**. La charge de travail est de l'ordre d'une semaine (tests et documentations compris).
