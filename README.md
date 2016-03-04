@@ -51,8 +51,8 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 
   - de copier les fichiers de configuration pour **Hadoop**, **Yarn** et **Spark** sur l'ensemble des noeuds du cluster,
   - de formater l'espace **Hadoop** associé au namenode,
-  - de démarrer *Hadoop*,
-  - de créer un répertoire utilisateur (hduser) sur HDFS,
+  - de démarrer **Hadoop**,
+  - de créer un répertoire utilisateur (hduser) sur **HDFS**,
   - de démarrer **Yarn**,
   - de démarrer **Spark** (master et slave(s)).
 
