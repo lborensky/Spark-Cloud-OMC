@@ -3,7 +3,6 @@
 import os
 from novaclient.v1_1 import client as nvclient
 
-from verify_boot import verify_all
 from find_vm import getVMByName, extract_hash
 from master_key import delete_key
 

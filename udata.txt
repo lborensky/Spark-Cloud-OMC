@@ -29,6 +29,7 @@ echo "DEBUT INSTALLATION" > /root/bootVM.log
 EOF
   )
 
+  sudo sed -i 's/^hduser\(.*\)$/hduser\1\/bin\/bash/' /etc/passwd
   sudo echo "$USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER
   sudo chmod 0440 /etc/sudoers.d/$USER
 
@@ -72,6 +73,7 @@ EOF
   echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64" >> $ENV_VARS
   echo "export HADOOP_HOME=$INSTALL_DIR/hadoop" >> $ENV_VARS
   echo "export HADOOP_DATA_DIR=/home/$USER/data" >> $ENV_VARS
+  echo "export HADOOP_PREFIX=$HADOOP_DIR" >> $ENV_VARS
   echo "export YARN_HOME=$INSTALL_DIR/hadoop" >> $ENV_VARS
   echo "export HADOOP_CONF_DIR=$INSTALL_DIR/hadoop/etc/hadoop" >> $ENV_VARS
   echo "export YARN_CONF_DIR=$INSTALL_DIR/hadoop/etc/hadoop" >> $ENV_VARS
@@ -95,7 +97,7 @@ EOF
   (cd $DOWNLOAD_DIR; sudo mv ${SPARK_RELEASE}-bin-hadoop2.4 ${SPARK_HOME})
   (cd $DOWNLOAD_DIR; rm -f ${SPARK_RELEASE}-bin-hadoop2.4.tgz)
 
-  sudo  mkdir -p /home/$USER/data
+  sudo  mkdir -p /home/$USER/data/hadoop/hdfs
 
   # fichiers de configuration pré-établis pour Hadoop
   sudo cp $CONF_FILES_DIR/core-site.xml $HADOOP_CONF_DIR/
@@ -103,8 +105,12 @@ EOF
   sudo cp $CONF_FILES_DIR/hdfs-site.xml $HADOOP_CONF_DIR/
   sudo cp $CONF_FILES_DIR/yarn-site.xml $HADOOP_CONF_DIR/
   sudo cp $CONF_FILES_DIR/yarn-site.xml.slave $HADOOP_CONF_DIR/
+  sudo cp $CONF_FILES_DIR/yarn-env.sh $HADOOP_CONF_DIR/
+  sudo cp $CONF_FILES_DIR/spark-env.sh $SPARK_CONF_DIR/
+
+  sudo cp $CONF_FILES_DIR/ssh_config /home/$USER/.ssh/config
     
-  sudo echo "export PATH=$PATH:$HADOOP_DIR/bin:$HADOOP_PREFIX/sbin" >> $ENV_VARS
+  sudo echo "export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin" >> $ENV_VARS
   sudo echo "export HADOOP_NAMENODE_USER=$USER" >> $ENV_VARS
   sudo echo "export HADOOP_DATANODE_USER=$USER" >> $ENV_VARS
   sudo echo "export HADOOP_SECONDARYNAMENODE_USER=$USER" >> $ENV_VARS
@@ -113,6 +119,8 @@ EOF
 
   sudo mkdir -p /var/lib/spark/{work,rdd,pid}
   sudo mkdir -p /var/log/spark
+  sudo chown -R $USER:$USER /var/lib/spark
+  sudo chown -R $USER:$USER /var/log/spark
 
   # fichiers de configuration pré-établis pour Spark
   sudo cp $CONF_FILES_DIR/spark-env.sh $SPARK_CONF_DIR/
@@ -120,7 +128,7 @@ EOF
   sudo cp $SPARK_CONF_DIR/log4j.properties.template $SPARK_CONF_DIR/log4j.properties
 
   sudo echo 'MASTER=spark://$(hostname):7077' >> $ENV_VARS
-  sudo echo "export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin" >> $ENV_VARS
+  sudo echo "export PATH=\$PATH:\$SPARK_HOME/bin:\$SPARK_HOME/sbin" >> $ENV_VARS
 
   echo "3. Installation de Scala"
   SCALA_RELEASE=scala-2.11.7
@@ -128,9 +136,11 @@ EOF
   (cd $DOWNLOAD_DIR; tar -zxf ${SCALA_RELEASE}.tgz )
   sudo mv $DOWNLOAD_DIR/$SCALA_RELEASE $SCALA_HOME
  
-  sudo echo "export PATH=$PATH:$SCALA_HOME/bin" >> $ENV_VARS
+  sudo echo "export PATH=\$PATH:\$SCALA_HOME/bin" >> $ENV_VARS
 
   echo "4. Installation de iPython"
+  source /home/$USER/.bashrc
+
   sudo apt-get install -y python-matplotlib
   sudo pip install pandas py4j ipython['all']
       

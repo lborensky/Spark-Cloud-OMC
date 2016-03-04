@@ -43,7 +43,8 @@ def deploy_conf_files():
         "mapred-site.xml")
     put(HADOOP_CONF_DIR + "yarn-site.xml.slave", HADOOP_CONF_DIR +
         "yarn-site.xml")
-    put(HADOOP_CONF_DIR + "yarn-env.sh", HADOOP_CONF_DIR + "yarn-env.sh")
+    put(SPARK_CONF_DIR + "hadoop-env.sh", HADOOP_CONF_DIR + "hadoop-env.sh")
+    put(SPARK_CONF_DIR + "yarn-env.sh", HADOOP_CONF_DIR + "yarn-env.sh")
     put(SPARK_CONF_DIR + "slaves", SPARK_CONF_DIR + "slaves")
     put(SPARK_CONF_DIR + "spark-env.sh", SPARK_CONF_DIR + "spark-env.sh")
     put(SPARK_CONF_DIR + "spark-defaults.conf", SPARK_CONF_DIR + "spark-defaults.conf")

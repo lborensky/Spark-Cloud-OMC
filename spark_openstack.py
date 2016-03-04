@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import with_statement
-import os, sys, time, paramiko
+import os, sys, time
 
 try:
   from fabric.api import *
@@ -41,14 +41,12 @@ try:
   from helpers.check_args import checkArgs_for_destroy
   from helpers.launcher import bootVM
   from helpers.destroy import destroy_cluster
-  from helpers.verify_boot import verify_all
-  from helpers.scp import scp
+  from helpers.verify_boot import verify_and_configure, ssh_connect, hdu_pkey
   from helpers.master_key import register_key
   from helpers.floating_ip import addFloatingIP
   from helpers.find_vm import getVMByName, getVMById, extract_hash
-  from helpers.find_vm import getVMById
 except ImportError as e:
-  print("Could not import helpers, MayDay MayDay...")
+  print("Could not import helpers, MayDay MayDay...: %s" % e)
   sys.exit(1)
 
 # fonction d'obtention de l'ID de l'image
@@ -62,40 +60,12 @@ def image_id(img):
   if not nova.images.findall(id=img):
     found = False
     for i in nova.images.list():
-      if image_ref == i.name:
+      if img == i.name:
         return i.id
     if found == False:
       return img
   else:
     return img
-
-# fonction de connexion SSH
-def ssh_connect(k, ip):
-  ssh = paramiko.SSHClient()
-  ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-  ssh.connect(ip, username='root', key_filename=k)
-  return ssh
-
-# fonction de récupération et de diffusion de clés SSH 
-def hdu_pkey(k, ip, cmd):
-  ssh = ssh_connect(k, ip)
-
-  ftp = ssh.open_sftp()
-  if cmd == "get":
-    ftp.get('/home/hduser/.ssh/id_rsa', 'kspark')
-    ftp.get('/home/hduser/.ssh/id_rsa.pub', 'kspark.pub')
-  
-  if cmd == "put":
-    ssh.exec_command("mkdir -p /home/hduser/.ssh")
-    ftp.put('kspark.pub', '/home/hduser/.ssh/id_rsa.pub')
-    ssh.exec_command("cat /home/hduser/.ssh/id_rsa.pub > /home/hduser/.ssh/authorized_keys")
-    ssh.exec_command("chown hduser:hduser /home/hduser/.ssh/authorized_keys")
-    ssh.exec_command("chmod 0600 /home/hduser/.ssh/authorized_keys")
-    ssh.exec_command("rm -f /home/hduser/.ssh/id_rsa.pub")
-
-  ftp.close()
-  ssh.close()
 
 # fonction de gestion des arguments du programme
 def parse_arguments():
@@ -119,7 +89,7 @@ def parse_arguments():
                         action="store", default="t1.standard.medium-1",
                         help="Size of Virtual Machine")
     parser.add_argument("-i", "--image", metavar="", dest="image",
-                        action="store", default="c55239d8-0c75-4c81-909e-0dd9debdb50f",
+                        action="store", default="ff09bba0-d28b-40e8-8cf2-05dfce91f5bc",
                         help="Image name to boot from")
     parser.add_argument("-v", "--verbose", dest="verbose",
                         action="store_true", help="verbose output")
@@ -131,7 +101,7 @@ def parse_arguments():
 # fonction du lancement du cluster (master et slave(s))
 def launch_cluster(options):
     username = "hduser"
-    print("###########################################################\n")
+    print("###########################################################")
     print("Booting Master... ")
     master_vm = boot_master(options)
     master_name = master_vm.name
@@ -140,10 +110,11 @@ def launch_cluster(options):
     print("Floating IP assigned: " + floating_ip)
 
     # récupération de la clé publique et privée associées au compte 'hduser'
-    time.sleep(10)
+    print("Wait 60 sec [Master boot Configuration]")
+    time.sleep(60)
     hdu_pkey(options.keyname, floating_ip, "get")
 
-    print("###########################################################\n")
+    print("###########################################################")
     print("Launching Slaves...")
 
     # Now launch the requested number of slaves with masters public key
@@ -151,24 +122,22 @@ def launch_cluster(options):
     meta = {'slave': hash}
 
     slave_name = options.cluster_name + "-slave"
-    status = bootVM(options.image, options.flavor, master_keyname, slave_name,
+    status = bootVM(options.image, options.flavor, options.keyname, slave_name,
                     meta, options.num_slaves, options.num_slaves)
 
     name = "slave"
     # find all vms whose name contains slave and matches hash
     slaves = getVMByName(name, hash)
     # get private ips of all slaves booted with hash
-    slaves_list = verify_all(slaves)
+    print("Wait 60 sec [Slave(s) boot Configuration]")
+    time.sleep(60)
+    slaves_list = verify_and_configure(slaves, slave_name, options.keyname)
     print("Got slaves list: " + str(slaves_list))
-    print("All VMs finished booting")
-    print("###########################################################\n")
+    print("All slave(s) VM finished booting with setup")
+    print("###########################################################")
 
-    # push private key "hduser" on slaves
-    for host in slaves_list:
-      hdu_pkey(options.keyname, host, "put")
-    
     print("Uploading files to master")
-    status = upload_files(master_vm, slaves_list, username, floating_ip)
+    status = upload_files(master_vm, slaves_list, username, floating_ip, options.keyname)
     print("\n")
     print("*********** All Slaves Created *************")
     print("*********** Slaves file Copied to Master *************")
@@ -179,7 +148,7 @@ def launch_cluster(options):
 
     return True
 
-def upload_files(master_id, slaves_list, username, floating_ip):
+def upload_files(master_id, slaves_list, username, floating_ip, keyname):
     # Create a file with master ip
     m_file = "/tmp/masters"
     s_file = "/tmp/slaves"
@@ -198,13 +167,14 @@ def upload_files(master_id, slaves_list, username, floating_ip):
     f_file = "helpers/fabfile.py"
     hadoop_conf_dir = "/usr/local/hadoop/etc/hadoop/"
 
-    ssh = ssh_connect("kspark", floating_ip)
+    ssh = ssh_connect(keyname, floating_ip)
 
     ftp = ssh.open_sftp()
     ftp.put(m_file, hadoop_conf_dir + "masters")
     ftp.put(s_file, hadoop_conf_dir + "slaves")
-    ftp.put(f_file, '/home/hduser/')
-    ssh.exec_command("chown hduser:hduser " + hadoop_conf_dir + "masters " + hadoop_conf_dir + "slaves ")
+    ssh.exec_command("chown hduser:hduser " + hadoop_conf_dir + "masters " + hadoop_conf_dir + "slaves")
+    ftp.put(f_file, '/home/hduser/fabfile.py')
+    ssh.exec_command("chown hduser:hduser /home/hduser/fabfile.py")
 
     ftp.close()
     ssh.close()
@@ -238,7 +208,7 @@ if __name__ == "__main__":
     if str(opts.action) == 'launch':
         opts.image = image_id(opts.image)
         args = checkArgs_for_launch(opts)
-        print("###########################################################\n")
+        print("###########################################################")
         print("Arguments Verified... preparing launch sequence")
         if args.dryrun:
             print("\n")
@@ -257,7 +227,7 @@ if __name__ == "__main__":
         master = checkArgs_for_destroy(opts)
         destroy_cluster(master)
     elif opts.action == 'add-nodes':
-        print("###########################################################\n")
+        print("###########################################################")
         print("Adding more nodes")
     
     else:

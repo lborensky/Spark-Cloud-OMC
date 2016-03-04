@@ -54,6 +54,7 @@ def checkArgs_for_launch(args):
         if not nova.images.findall(id=args.image):
             print("Given Image " + args.image + " not found in Nova")
             raise ValueError
+
         if not nova.flavors.findall(name=args.flavor):
             print("Given Flavor " + args.flavor + " not registered in Nova")
             raise ValueError

@@ -1,0 +1,10 @@
+Host 127.0.1.*
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null
+
+Host 10.0.0.*
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null
+    
+Host *
+    NoHostAuthenticationForLocalhost yes

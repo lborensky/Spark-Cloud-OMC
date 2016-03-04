@@ -7,7 +7,7 @@ from novaclient.v1_1 import client as nvclient
 if len(sys.argv) != 4:
   print("usage: %s vm-name key-name userdata-file") % sys.argv[0]
   print("    vm-name: nom de la VM à instancier")
-  print("    key-name-file: fichier relatif à la clé privée d'accès root à la VM")
+  print("    key-name-file: nom du fichier relatif à la clé privée d'accès root à la VM")
   print("    userdata-file: fichier de commandes à passer à Cloud-init")
   sys.exit(1)
 else:

@@ -21,13 +21,12 @@ def getVMByName(name, hash=None):
 
     # Find all VMs whose name matches
     servers = nova.servers.list(search_opts={'name': name})
-
+    # servers = nova.servers.list()
     # Filter out the VMs with correct hash
     for server in servers:
         val = extract_hash(server)
         if val == hash:
             server_list.append(server)
-
     return server_list
 
 def getVMById(id):
