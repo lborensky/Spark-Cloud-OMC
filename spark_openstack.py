@@ -89,7 +89,7 @@ def parse_arguments():
                         action="store", default="t1.standard.medium-1",
                         help="Size of Virtual Machine")
     parser.add_argument("-i", "--image", metavar="", dest="image",
-                        action="store", default="ff09bba0-d28b-40e8-8cf2-05dfce91f5bc",
+                        action="store", default="529cf62f-3925-4f2a-984b-d00e045db7b2",
                         help="Image name to boot from")
     parser.add_argument("-v", "--verbose", dest="verbose",
                         action="store_true", help="verbose output")

@@ -57,6 +57,7 @@ EOF
   export HADOOP_DIR=$INSTALL_DIR/hadoop
   export HADOOP_HOME=$HADOOP_DIR
   export HADOOP_CONF_DIR=$HADOOP_DIR/etc/hadoop
+  export HADOOP_LIB_DIR=$HADOOP_DIR/libexec
 
   export SPARK_DIR=$INSTALL_DIR/spark
   export SPARK_HOME=$SPARK_DIR
@@ -106,6 +107,7 @@ EOF
   sudo cp $CONF_FILES_DIR/yarn-site.xml $HADOOP_CONF_DIR/
   sudo cp $CONF_FILES_DIR/yarn-site.xml.slave $HADOOP_CONF_DIR/
   sudo cp $CONF_FILES_DIR/yarn-env.sh $HADOOP_CONF_DIR/
+  sudo cp $CONF_FILES_DIR/hadoop-config.sh $HADOOP_LIB_DIR/
   sudo cp $CONF_FILES_DIR/spark-env.sh $SPARK_CONF_DIR/
 
   sudo cp $CONF_FILES_DIR/ssh_config /home/$USER/.ssh/config
