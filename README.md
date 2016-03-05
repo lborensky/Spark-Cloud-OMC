@@ -41,7 +41,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 1) Instancier le cluster **Spark** à l'aide du script Python "spark-openstack" avec la syntaxe suivante:
 
 ```
-    $ spark-openstack launch -s 2 -k $KEY -i LB-VM04-R01 -c LB-VM04 <CR>
+    $ spark-openstack launch -s 2 -k spark-key-file -i LB-VM04-R01 -c LB-VM04 <CR>
     ...
     $ nova list | grep grep LB-VM04 <CR>
     ...
