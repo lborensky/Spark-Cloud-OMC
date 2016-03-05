@@ -59,6 +59,9 @@ def set_conf_files():
         local('sed -i "s/XXXX/$(hostname)/g" yarn-site.xml.slave')
         local('cp slaves /usr/local/spark/conf/')
 
+    with lcd(SPARK_CONF_DIR):
+        local('sed -i "s/XXXX/$(hostname -I | awk \'{ print $1 }\')/g" spark-env.sh')
+
 @task
 @roles('slave')
 def create_hdfs_dirs():
@@ -95,7 +98,6 @@ def init_cluster():
     execute(set_conf_files)
     execute(deploy_conf_files)
     execute(format_hdfs)
-    execute(start_hadoop)
 
 @task
 def stop_hadoop():

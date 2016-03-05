@@ -61,20 +61,25 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 ```
     $ chmod 0600 KeyFileName <CR>
     $ ssh -i KeyFileName root@$VMfloatingIP <CR>
-    root@lb-vm05-master# fab -l <CR>
+    root@lb-vm04-master# fab -l <CR>
     ...
 
-    # test les connexions SSH avec les slaves (workers Spark)
-    root@lb-vm05-master# fab test_conn <CR>
-    lb-vm05-slave-94e538d0-5b19-457e-8e72-939647fb68d2
-    lb-vm05-slave-4131aab9-c505-4f75-9f34-6dd884258941
+    # test (préalable) les connexions SSH avec les slaves (workers Spark)
+    root@lb-vm04-master# fab test_conn <CR>
+    lb-vm04-slave-94e538d0-5b19-457e-8e72-939647fb68d2
+    lb-vm04-slave-4131aab9-c505-4f75-9f34-6dd884258941
     ...
     
-    root@lb-vm05-master# fab init_cluster <CR>
+    # initialisation du cluster 
+    root@lb-vm04-master# fab init_cluster <CR>
     ...
 
+    # démarrage des services Hadoop (DFS & YARN)
+    root@lb-vm04-master# fab start_hadoop <CR>
+    ...
 
-    root@lb-vm05-master# fab start_spark <CR>
+    # démarrage des services Spark (Master et Slave(s))
+    root@lb-vm04-master# fab start_spark <CR>
     ...
 ```
 
