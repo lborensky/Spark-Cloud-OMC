@@ -111,11 +111,11 @@ def start_hadoop():
 
 @task
 def start_spark():
-    local('/usr/local/spark/sbin/start-all.sh')
+    local('(. /usr/local/spark/conf/spark-env.sh; /usr/local/spark/sbin/start-all.sh)')
 
 @task
 def stop_spark():
-    local('/usr/local/spark/sbin/stop-all.sh')
+    local('(. /usr/local/spark/conf/spark-env.sh; /usr/local/spark/sbin/stop-all.sh)')
 
 @task
 def reset_cluster():
