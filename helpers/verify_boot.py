@@ -69,11 +69,13 @@ def verify_and_configure(servers, sname, key):
         # recopie des fichiers PKI à la VM
         hdu_pkey(key, floating_ip.ip, "put")
 
-        # libération adresse IP flottante
+        # dettachement adresse IP flottante de la VM
         instance.remove_floating_ip(floating_ip.ip)
+
+        # libération de l'adresse IP flottante et retour au pool
+        nova.floating_ips.delete(floating_ip.id)
 
         print(instance.name + " booted with ip: " + str(instance.addresses["TestAPI-run"][0]["addr"]))
         addresses.append(str(instance.addresses["TestAPI-run"][0]["addr"]))
         
-
     return addresses
