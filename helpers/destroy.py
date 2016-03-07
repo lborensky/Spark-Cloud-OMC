@@ -31,6 +31,19 @@ def destroy_cluster(master):
             print("Now deleting: " + master )
             for slave in slaves:
                 slave.delete()
+
+            # dettachement adresse IP flottante de la VM Master
+            networks = master_id.networks
+            ipf = networks['TestAPI-run'][1]
+            master_id.remove_floating_ip(ipf)
+
+            # libération de l'adresse IP flottante et retour au pool
+            floating_ips = nova.floating_ips.list()
+            for ips in floating_ips:
+                if ips.ip == ipf:
+                    nova.floating_ips.delete(ips)
+
+            # suppression de la VM Master
             master_id.delete()
 
     except:
