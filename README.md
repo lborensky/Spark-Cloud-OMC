@@ -1,6 +1,6 @@
 # spark-cloud-omc
 ## A. Introduction
-Cette réalisation est un embryon de l'application **Spark EC2** pour **Openstack**. Elle est relative à l'installation de **Spark Cluster Manager YARN**, ce qui signifie que **Spark** s'appuie sur **YARN** pour gérer les ressources de traitements distribuées et sur **HDFS** d'Hadoop pour gérer les données distribuées. Elle reprend les concepts de la réalisation de "_ezhaar_" (disponible sur GitHub) qui est constituée de 2 parties:
+Cette réalisation est un embryon de l'application **Spark EC2** pour **Openstack**. Elle est relative à l'installation de **Spark Cluster Manager Standalone** pour gérer des ressources de traitements distribuées et s'appuie sur **HDFS** d'Hadoop pour gérer les données distribuées. Elle reprend les concepts de la réalisation de "_ezhaar_" (disponible sur GitHub) qui est constituée de 2 parties:
 
 1. une première relative à la création d'une image de référence pour des VM **Openstack** (master et slaves Spark) avec les composants suivants d'installés et de configurés: **Spark**, **Hadoop**, **Yarn**, **Scala**, ...,
 
