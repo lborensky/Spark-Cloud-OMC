@@ -37,7 +37,7 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 ```
     $ nova image-create LB-VM04 LB-VM04-R01 <CR>
 ```
-## C. Instanciation du **Cluster Master YARN** avec master et slave(s)
+## C. Instanciation du **Cluster Spark** avec master et slave(s)
 1) Instancier le cluster **Spark** à l'aide du script Python "spark-openstack" avec la syntaxe suivante:
 
 ```
