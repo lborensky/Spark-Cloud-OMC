@@ -84,4 +84,4 @@ Pour instancier un cluster *Spark* (ex: 1 master et 2 slaves) dans l'implémenta
 ```
 
 ## D. Conclusion
-A ce stade, on peut utiliser et gérer le cluster à l'aide des différentes interfaces. Pour ce faire, l'utilisation de notebooks est appropriée. Cette petite adaptation est relative à un embryon de portage du code **EC2 Spark** sur **Openstack Spark** basé sur une réalisation existante. Un travail approfondi doit être mené pour réellement porter le code **EC2 Spark** pour **Openstack Spark**. La charge de travail est de l'ordre d'une semaine (tests et documentations compris).
+A ce stade, on peut utiliser et gérer le cluster à l'aide des différentes interfaces. Pour ce faire, l'utilisation de notebooks est appropriée. Cette petite adaptation est relative à un embryon de portage du code **EC2 Spark** sur **Openstack Spark**. Un travail approfondi doit être mené pour réellement porter le code **EC2 Spark** pour **Openstack Spark**. La charge de travail est de l'ordre d'une semaine (tests et documentations compris).
