@@ -110,8 +110,8 @@ def launch_cluster(options):
     print("Floating IP assigned: " + floating_ip)
 
     # récupération de la clé publique et privée associées au compte 'hduser'
-    print("Wait 90 sec [Master boot Configuration]")
-    sleep(90)
+    print("Wait 60 sec [Master boot Configuration]")
+    sleep(60)
     hdu_pkey(options.keyname, floating_ip, "get")
 
     print("###########################################################")
@@ -129,8 +129,8 @@ def launch_cluster(options):
     # find all vms whose name contains slave and matches hash
     slaves = getVMByName(name, hash)
     # get private ips of all slaves booted with hash
-    print("Wait 90 sec [Slave(s) boot Configuration]")
-    sleep(90)
+    print("Wait 60 sec [Slave(s) boot Configuration]")
+    sleep(60)
     slaves_list = verify_and_configure(slaves, slave_name, options.keyname)
     print("Got slaves list: " + str(slaves_list))
     print("All slave(s) VM finished booting with setup")
