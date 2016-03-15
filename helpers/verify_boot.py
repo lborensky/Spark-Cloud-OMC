@@ -55,6 +55,10 @@ def verify_and_configure(servers, sname, key):
             instance = nova.servers.get(server.id)
             status = instance.status
 
+        if status == 'ERROR':
+            print("status server (%s) = ERROR" % server.name) 
+            sys.exit(-1)
+
         n = n + 1
         instance = nova.servers.get(server.id)
 
