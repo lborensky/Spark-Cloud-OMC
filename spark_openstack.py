@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import with_statement
-import os, sys, time
+import os, sys
 
 try:
   from fabric.api import *
@@ -89,7 +89,7 @@ def parse_arguments():
                         action="store", default="t1.standard.medium-1",
                         help="Size of Virtual Machine")
     parser.add_argument("-i", "--image", metavar="", dest="image",
-                        action="store", default="529cf62f-3925-4f2a-984b-d00e045db7b2",
+                        action="store", default="a4c6c2eb-927d-4b0f-b438-76cd4a1d0f78",
                         help="Image name to boot from")
     parser.add_argument("-v", "--verbose", dest="verbose",
                         action="store_true", help="verbose output")
@@ -110,8 +110,8 @@ def launch_cluster(options):
     print("Floating IP assigned: " + floating_ip)
 
     # récupération de la clé publique et privée associées au compte 'hduser'
-    print("Wait 60 sec [Master boot Configuration]")
-    time.sleep(60)
+    print("Wait 90 sec [Master boot Configuration]")
+    sleep(90)
     hdu_pkey(options.keyname, floating_ip, "get")
 
     print("###########################################################")
@@ -129,8 +129,8 @@ def launch_cluster(options):
     # find all vms whose name contains slave and matches hash
     slaves = getVMByName(name, hash)
     # get private ips of all slaves booted with hash
-    print("Wait 60 sec [Slave(s) boot Configuration]")
-    time.sleep(60)
+    print("Wait 90 sec [Slave(s) boot Configuration]")
+    sleep(90)
     slaves_list = verify_and_configure(slaves, slave_name, options.keyname)
     print("Got slaves list: " + str(slaves_list))
     print("All slave(s) VM finished booting with setup")
